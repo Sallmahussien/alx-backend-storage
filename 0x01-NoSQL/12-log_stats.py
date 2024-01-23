@@ -5,10 +5,12 @@ from pymongo import MongoClient
 
 
 def count_documents(collection, query={}):
+    """Counts the number of documents based on a given query"""
     return collection.count_documents(query)
 
 
 def main():
+    """Print logs as required"""
     client = MongoClient()
     db = client.logs
     nginx_collection = db.nginx

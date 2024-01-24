@@ -16,10 +16,6 @@ def count_cache(method: Callable) -> Callable:
         """Wrapper function for the decorated method."""
         redis_client.incr(f"count:{url}")
 
-        result = redis_client.get(f'result:{url}')
-        if result:
-            return result.decode('utf-8')
-
         result = method(url)
         redis_client.setex(f"result:{url}", 10, result)
 

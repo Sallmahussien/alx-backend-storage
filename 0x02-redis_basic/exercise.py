@@ -19,7 +19,7 @@ class Cache:
         self._redis.set(generated_key, data)
         return generated_key
 
-    def get(self, key: str, fn: Callable) -> str:
+    def get(self, key: str, fn: Union[Callable, None] = None) -> str:
         """Retrieves and type-converts the value of a specific key using fn"""
         value = self._redis.get(key)
 

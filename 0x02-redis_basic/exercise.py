@@ -17,7 +17,24 @@ def count_calls(method: Callable) -> Callable:
             self._redis.incr(method.__qualname__)
 
         return method(self, *args, **kwds)
-    
+
+    return wrapper
+
+
+def call_history(method: Callable) -> Callable:
+    """"""
+
+    @wraps(method)
+    def wrapper(self, *args, **kwds):
+        """"""
+        generated_key = method(self, *args, **kwds)
+
+        if isinstance(self._redis, redis.Redis):
+            self._redis.rpush(f"{method.__qualname__}:inputs", str(args))
+            self._redis.rpush(f"{method.__qualname__}:outputs", generated_key)
+
+        return generated_key
+
     return wrapper
 
 
@@ -28,6 +45,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @call_history
     @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """Takes a data argument and returns a string"""
